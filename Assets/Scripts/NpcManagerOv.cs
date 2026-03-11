@@ -11,7 +11,7 @@ public class NpcManagerOv : NpcManager
     public int maxFarmerPatienNum=3;//农夫病人最大数量
     public List<Transform> areaLst;
     private List<PatientItem> mPatients=new List<PatientItem>();
-    private List<FarmerPatientItem> mFarmerPatients=new List<FarmerPatientItem>();
+    private List<PatientItem> mFarmerPatients=new List<PatientItem>();
 
     void Update()
     {
@@ -24,7 +24,7 @@ public class NpcManagerOv : NpcManager
     {
         if (mPatients.Count < maxPatienNum)
         {
-            PatientItem e = PoolManager.instance.GetItem(ItemType.FarmerPatient) as PatientItem;
+            PatientItem e = PoolManager.instance.GetItem(ItemType.FigherPatient) as PatientItem;
             e.mRigidbody.isKinematic = false;
             e.transform.position = new Vector3(
                 Random.Range(areaLst[0].position.x, areaLst[1].position.x),
@@ -39,7 +39,7 @@ public class NpcManagerOv : NpcManager
     {
         if (mFarmerPatients.Count < maxFarmerPatienNum)
         {
-            FarmerPatientItem e = PoolManager.instance.GetItem(ItemType.FarmerPatient) as FarmerPatientItem;
+            PatientItem e = PoolManager.instance.GetItem(ItemType.FarmerPatient) as PatientItem;
             e.mRigidbody.isKinematic = false;
             e.transform.position = new Vector3(
                 Random.Range(areaLst[0].position.x, areaLst[1].position.x),
@@ -63,9 +63,12 @@ public class NpcManagerOv : NpcManager
         else
             mPatients.Remove(item);
     }
-    public override List<PatientItem> GetPatients()
+    public override List<PatientItem> GetPatients(ItemType itemType)
     {
-        return mPatients;
+        if (itemType == ItemType.FigherPatient)
+            return mPatients;
+        else
+            return mFarmerPatients;
     }
 
     //病人接入病床并刷新

@@ -31,10 +31,12 @@ public class PorterNpc : Npc
     public SoakManager soakManager;//泡汤池
 
     ItemStack npcStack;
+    ItemStack farmerStack;
     int enemyBedNum;
     void Start()
     {
         npcStack = itemStackManager.stackList[0];
+        farmerStack = itemStackManager.stackList[1];
         StartCoroutine(WorkCycle());
     }
     void FixedUpdate()
@@ -66,6 +68,17 @@ public class PorterNpc : Npc
         return available;
     }
 
+    /// <summary>
+    /// 获取剩余泡汤池位置
+    /// </summary>
+    /// <returns></returns>
+    private int GetRemainFamerCount()
+    {
+        if (!soakManager.gameObject.activeInHierarchy) return 0;
+
+        return soakManager.poolStack.totalMaxAmount - soakManager.poolStack.totalStackedItemsAmount;
+    }
+
 
     /// <summary>
     /// 获取空床位
@@ -95,9 +108,9 @@ public class PorterNpc : Npc
     }
 
     private List<PatientItem> patients=new List<PatientItem>();
-    private PatientItem GetPatient()
+    private PatientItem GetPatient(ItemType itemType)
     {
-        var lst = NpcManager.instance.GetPatients();
+        var lst = NpcManager.instance.GetPatients(itemType);
         float minSqr = float.MaxValue;
         PatientItem target = null;
         //从NpcManager获取所有战士病人
@@ -152,9 +165,9 @@ public class PorterNpc : Npc
                 yield return null;
            
             enemyBedNum = GetAvailableBedCount();
-            while (npcStack.stackAmount < enemyBedNum)
+            while (npcStack.stackAmount < enemyBedNum)//等待获取病人
             {
-                var target = GetPatient();//获取最近的病人
+                var target = GetPatient(ItemType.FigherPatient);//获取最近的病人
                 if (target == null)
                 {
                     // 没有可用的病人时，退出循环等待
@@ -163,11 +176,32 @@ public class PorterNpc : Npc
                 isfinsh = false;
                 MoveToTarget(target.transform.position, () => isfinsh = true);
                 while (!isfinsh)
-                        yield return null;
+                    yield return null;
             }
-            
-            while (npcStack.stackAmount < GetAvailableBedCount())//等待获取病人
-                 yield return null;
+
+            // while (npcStack.stackAmount < GetAvailableBedCount())//等待获取病人
+            //     yield return null;
+
+            while (farmerStack.stackAmount < GetRemainFamerCount()) //等待获取农夫病人
+            {
+                var target = GetPatient(ItemType.FarmerPatient);//获取最近的病人
+                if (target == null)
+                {
+                    // 没有可用的病人时，退出循环等待
+                    break;
+                }
+                isfinsh = false;
+                MoveToTarget(target.transform.position, () => isfinsh = true);
+                while (!isfinsh)
+                    yield return null;
+            }
+
+            //前往泡汤池
+            var soakPos = soakManager.poolStack.transform.position;
+            MoveToTarget(new Vector3(soakPos.x, transform.position.y, soakPos.z));
+            while (GetRemainFamerCount()>0&&farmerStack.stackAmount!=0)//等待填满泡汤池
+                yield return null;
+
 
             //前往空床位
             for (int i = 0; i < maxBedIndex; i++)

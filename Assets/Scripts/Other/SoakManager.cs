@@ -11,7 +11,7 @@ using UnityEngine;
 public class SoakManager : MonoSingleton<SoakManager>
 {
     [Header("泡汤池设置")]
-    [SerializeField] private GroundItemStackManager poolStack;
+    public GroundItemStackManager poolStack;
     [Tooltip("治愈1个病人所需的小麦数量")]
     [SerializeField] private int wheatPerPatient = 2;
     [Tooltip("小麦从堆叠器取出后等待多久再飞向病人")]

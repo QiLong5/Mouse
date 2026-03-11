@@ -81,7 +81,7 @@ public class NpcManager :MonoSingleton<NpcManager>
     {
 
     }
-    public virtual List<PatientItem> GetPatients()
+    public virtual List<PatientItem> GetPatients(ItemType itemType)
     {
         return null;
     }
