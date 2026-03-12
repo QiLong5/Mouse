@@ -179,7 +179,8 @@ public class Player : MonoSingleton<Player>
         if (other.tag.Equals("Home"))
         {
             IsAtHome = true;
-            attackRangeIndicator.Hide();
+            attackRangeIndicator?.Hide();
+            mHpUi.Hide();
         }
         if (other.tag.Equals("Enemy"))
         {
@@ -234,11 +235,10 @@ public class Player : MonoSingleton<Player>
             {
                 mHp++;
                 mHpUi.SetHpFill((mHp / mHpMax));
-                if (mHp==mHpMax)
+                if (mHp == mHpMax)
                 {
                     mHpUi.Hide();
                 }
-               
                 UIManager.instance.StopDanger();
             }
         }
@@ -289,7 +289,7 @@ public class Player : MonoSingleton<Player>
         if (other.tag.Equals("Home"))
         {
             IsAtHome = false;
-            attackRangeIndicator.Show();
+            attackRangeIndicator?.Show();
             mHpUi.gameObject.SetActive(true);
         }
     }
@@ -389,6 +389,7 @@ public class Player : MonoSingleton<Player>
             moneyAmount = 0;
         }
         UIManager.instance.SetGold(moneyAmount);
+        ClerkManager.instance?.AddTotalMoney(_value);
     }
 
     /// <summary>

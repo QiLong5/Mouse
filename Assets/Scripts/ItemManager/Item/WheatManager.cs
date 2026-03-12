@@ -59,4 +59,27 @@ public class WheatManager : MonoSingleton<WheatManager>
         if (available.Count == 0) return null;
         return available[Random.Range(0, available.Count)];
     }
+
+    /// <summary>
+    /// 获取距离农夫最近的可用小麦（未收割且未被其他农夫锁定）
+    /// </summary>
+    public Wheat GetNearestAvailableWheat(FarmerPatientItem farmer)
+    {
+        Wheat nearest = null;
+        float minDist = float.MaxValue;
+        foreach (Transform child in transform)
+        {
+            var wheat = child.GetComponent<Wheat>();
+            if (wheat == null) continue;
+            if (!wheat.IsAvailableForFarmer(farmer)) continue;
+
+            float dist = Vector3.Distance(farmer.transform.position, wheat.transform.position);
+            if (dist < minDist)
+            {
+                minDist = dist;
+                nearest = wheat;
+            }
+        }
+        return nearest;
+    }
 }

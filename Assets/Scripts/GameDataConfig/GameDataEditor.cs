@@ -1,9 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
+using ExcelTool;
 using UnityEngine;
 
 public class GameDataEditor :MonoSingleton<GameDataEditor>
 {
+    public GameConfig gameConfig;
     [Header("玩家相关")]
     [Tooltip("玩家移动速度")] public float playerSpeed = 9f;
     [Tooltip("玩家旋转平滑系数")] public float playerTurnSmoothTime = 0.1f;
@@ -34,4 +36,39 @@ public class GameDataEditor :MonoSingleton<GameDataEditor>
     [Tooltip("每个顾客需要物品数量")] public int customerNeedCount = 3;
     [Tooltip("每个顾客给的金币")] public int customerGiveGoin = 3;
     [Tooltip("物品交易间隔")] public float itemSpawnInterval = 0.1f;
+
+    public int enemyDropNum;
+    public int enemyInitNum;
+    //其他数据
+    public float wheatTime;
+    public float conveyorTime;
+    public float patientNum;
+    public float famerPatientNum;
+    public float elevatorTime;
+    public float wheatPerPatient;
+    public float patienMoney;
+    public float famerPatienMoney;
+
+    public override void Awake()
+    {
+        base.Awake();
+
+        playerSpeed = gameConfig.玩家数据.playerSpeed;
+        playerTurnSmoothTime = gameConfig.玩家数据.playerTurnSmoothTime;
+        playerMaxHp = gameConfig.玩家数据.playerMaxHp;
+
+        enemyCount = gameConfig.老鼠数据.enemyCount;
+        enemySpeed = gameConfig.老鼠数据.enemySpeed;
+        enemyKnockbackForc = gameConfig.老鼠数据.enemyKnockbackForc;
+        enemyInitNum = gameConfig.老鼠数据.enemyInitNum;
+
+        wheatTime = gameConfig.其他配置.wheatTime;
+        conveyorTime = gameConfig.其他配置.conveyorTime;
+        patientNum = gameConfig.其他配置.patientNum;
+        famerPatientNum = gameConfig.其他配置.famerPatientNum;
+        elevatorTime = gameConfig.其他配置.elevatorTime;
+        wheatPerPatient = gameConfig.其他配置.wheatPerPatient;
+        patienMoney = gameConfig.其他配置.patienMoney;
+        famerPatienMoney = gameConfig.其他配置.famerPatienMoney;
+    }
 }

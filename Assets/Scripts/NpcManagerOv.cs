@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 /// <summary>
 /// npc管理
@@ -10,6 +12,10 @@ public class NpcManagerOv : NpcManager
     public int maxPatienNum=6;//病人最大数量
     public int maxFarmerPatienNum=3;//农夫病人最大数量
     public List<Transform> areaLst;
+    [SerializeField]
+    private bool isUnlockFarmer;
+    [Header("战士产金堆叠器")]
+    public GroundItemStackManager fighterCoinStack;
     private List<PatientItem> mPatients=new List<PatientItem>();
     private List<PatientItem> mFarmerPatients=new List<PatientItem>();
 
@@ -18,6 +24,10 @@ public class NpcManagerOv : NpcManager
         EnemyCreate();
         PatientCreate();
         FammerPatientCreate();
+    }
+    public void UnlockFarmerPatien()
+    {
+        isUnlockFarmer = true;
     }
 
     private void PatientCreate()
@@ -37,6 +47,8 @@ public class NpcManagerOv : NpcManager
     }
     private void FammerPatientCreate()
     {
+        if (!isUnlockFarmer) return;
+        
         if (mFarmerPatients.Count < maxFarmerPatienNum)
         {
             PatientItem e = PoolManager.instance.GetItem(ItemType.FarmerPatient) as PatientItem;
@@ -78,8 +90,25 @@ public class NpcManagerOv : NpcManager
     }
 
 
-    protected IEnumerator CustomerExit(PatientItem _customer,ItemStack stack,bool isPlayer)
-    { 
+    protected IEnumerator CustomerExit(PatientItem _customer, ItemStack stack, bool isPlayer)
+    {
         yield return null;
+    }
+    
+        /// <summary>
+    /// 解锁最终区域
+    /// </summary>
+    public override void UnlockLevel()
+    {
+        StartCoroutine(Delay(2, () =>
+        {
+            var ui=GameObject.Find("UIManager");
+            ui.transform.Find("Win").gameObject.SetActive(true);//显示胜利界面
+        }));
+    }
+    IEnumerator Delay(float time,Action action)
+    {
+        yield return new WaitForSeconds(time);
+        action?.Invoke();
     }
 }

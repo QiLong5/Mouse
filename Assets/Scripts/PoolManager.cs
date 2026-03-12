@@ -9,9 +9,11 @@ using UnityEngine;
 public class PoolManager :MonoSingleton<PoolManager>
 {
     public Queue<UIHealthBar> mEnemyhps = new Queue<UIHealthBar>();
+    public Queue<UIHealthBar> mFighterhps = new Queue<UIHealthBar>();
     public List<Item> itemPrefabs;
     public List<Npc> npcPrefabs;
     public UIHealthBar mEnemyHpPrefab;
+    public UIHealthBar mFighterHpPrefab;
     private Dictionary<ItemType, Queue<Item>> items = new Dictionary<ItemType, Queue<Item>>();
     private Dictionary<NpcType, Queue<Npc>> npcs = new Dictionary<NpcType, Queue<Npc>>();
     public override void Awake()
@@ -26,14 +28,28 @@ public class PoolManager :MonoSingleton<PoolManager>
 
     public UIHealthBar GetEnemyHp()
     {
-        UIHealthBar hp =null;
+        UIHealthBar hp = null;
         if (mEnemyhps.Count > 0)
         {
-            hp= mEnemyhps.Dequeue();
+            hp = mEnemyhps.Dequeue();
         }
         else
         {
             hp = Instantiate(mEnemyHpPrefab, UIManager.instance.mEnemyHps);
+        }
+
+        return hp;
+    }
+    public UIHealthBar GetFighterHp()
+    {
+        UIHealthBar hp =null;
+        if (mFighterhps.Count > 0)
+        {
+            hp= mFighterhps.Dequeue();
+        }
+        else
+        {
+            hp = Instantiate(mFighterHpPrefab, UIManager.instance.mEnemyHps);
         }
 
         return hp;
@@ -80,12 +96,19 @@ public class PoolManager :MonoSingleton<PoolManager>
 
     public void ReturnEnemyHp(UIHealthBar _enemyhp)
     {
-        StartCoroutine(WaitDoIE(0.5f,()=>
+        StartCoroutine(WaitDoIE(0.5f, () =>
         {
             mEnemyhps.Enqueue(_enemyhp);
             _enemyhp.gameObject.SetActive(false);
         }));
-     
+    }
+    public void ReturnFighterHp(UIHealthBar _fighterhp)
+    {
+        StartCoroutine(WaitDoIE(0.5f,()=>
+        {
+            mFighterhps.Enqueue(_fighterhp);
+            _fighterhp.gameObject.SetActive(false);
+        }));
     }
 
     public void ReturnEnemy(Enemy _enemy,float waittimes=1f)

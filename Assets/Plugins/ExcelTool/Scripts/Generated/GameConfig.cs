@@ -40,9 +40,9 @@ namespace ExcelTool
         public 其他配置Data 其他配置 = new 其他配置Data();
 
         /// <summary>
-        /// 生产交易相关 - ItemInfo
+        /// 图标配置 - ClerkInfo
         /// </summary>
-        public List<ItemInfoItem> itemInfo = new List<ItemInfoItem>();
+        public List<ClerkInfoItem> clerkInfo = new List<ClerkInfoItem>();
 
         /// <summary>
         /// 引导配置 - GuildInfo
@@ -63,12 +63,12 @@ namespace ExcelTool
             /// <summary>
             /// 玩家旋转平滑系数
             /// </summary>
-            public int playerTurnSmoothTime = 10;
+            public float playerTurnSmoothTime = 0.1f;
 
             /// <summary>
             /// 玩家最大血量
             /// </summary>
-            public int playerMaxHp = 20;
+            public int playerMaxHp = 100;
 
         }
 
@@ -81,7 +81,7 @@ namespace ExcelTool
             /// <summary>
             /// 老鼠数量上限
             /// </summary>
-            public int enemyCount = 100;
+            public int enemyCount = 30;
 
             /// <summary>
             /// 老鼠移动速度
@@ -89,24 +89,19 @@ namespace ExcelTool
             public float enemySpeed = 4.0f;
 
             /// <summary>
-            /// 陷阱击飞高度
+            /// 老鼠击退距离
             /// </summary>
-            public float enemyKnockbackForc = 10.0f;
+            public float enemyKnockbackForc = 20.0f;
 
             /// <summary>
-            /// 老鼠掉落肉块数
+            /// 老鼠掉落金币值
             /// </summary>
-            public int enemyDropNum = 1;
+            public int enemyDropNum = 5;
 
             /// <summary>
-            /// 老鼠刷新间隔
+            /// 初始老鼠数量
             /// </summary>
-            public float enemyInterval = 0.5f;
-
-            /// <summary>
-            /// 老鼠单次间隔内的生成数量
-            /// </summary>
-            public int enemyCreateNum = 1;
+            public int enemyInitNum = 5;
 
         }
 
@@ -117,42 +112,77 @@ namespace ExcelTool
         public class 其他配置Data
         {
             /// <summary>
-            /// 自动锤子敲击按钮频率
+            /// 小麦生长时间
             /// </summary>
-            public float hammerTime = 5.0f;
+            public float wheatTime = 3.0f;
 
             /// <summary>
             /// 传送带速度
             /// </summary>
             public float conveyorTime = 0.8f;
 
+            /// <summary>
+            /// 门口普通病人上限
+            /// </summary>
+            public int patientNum = 6;
+
+            /// <summary>
+            /// 门口泡汤类病人上限
+            /// </summary>
+            public int famerPatientNum = 3;
+
+            /// <summary>
+            /// 电梯升/降时间
+            /// </summary>
+            public float elevatorTime = 0.5f;
+
+            /// <summary>
+            /// 治愈泡汤病人需要小麦数量
+            /// </summary>
+            public int wheatPerPatient = 1;
+
+            /// <summary>
+            /// 普通病人掉落金币值
+            /// </summary>
+            public int patienMoney = 10;
+
+            /// <summary>
+            /// 泡汤病人掉落金币值
+            /// </summary>
+            public int famerPatienMoney = 50;
+
         }
 
         /// <summary>
-        /// 生产交易相关 - ItemInfo 数据项
+        /// 图标配置 - ClerkInfo 数据项
         /// </summary>
         [System.Serializable]
-        public class ItemInfoItem
+        public class ClerkInfoItem
         {
             /// <summary>
-            /// 对应产品类型
+            /// 图标id
             /// </summary>
-            public string produceType;
+            public int id;
 
             /// <summary>
-            /// 原料数量
+            /// 累计获得金币数后
             /// </summary>
-            public int needCount;
+            public int getTotalCoin;
 
             /// <summary>
-            /// 生产数量
+            /// 需解锁id前提
             /// </summary>
-            public int produceNum;
+            public List<int> unlockIds;
 
             /// <summary>
-            /// 生成时间
+            /// 需投入金币数
             /// </summary>
-            public float proTime;
+            public int price;
+
+            /// <summary>
+            /// 触发事件
+            /// </summary>
+            public string eventStr;
 
         }
 

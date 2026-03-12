@@ -72,7 +72,11 @@ public class PatientInjection : MonoBehaviour
         //玩家指向病人并播放动画
         var player = tf.GetComponent<Player>();
         if (player!= null)
+        {
             Player.instance.isStop = true;
+            Player.instance.mRigidbody.velocity = Vector3.zero;
+            Player.instance.transform.DOMove(new Vector3(transform.position.x,Player.instance.transform.position.y,transform.position.z),0.2f);
+        }
 
         isInjection = true;
         patien.StateSwitch(PatienState.Injection);

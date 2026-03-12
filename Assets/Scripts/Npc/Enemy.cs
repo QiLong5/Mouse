@@ -41,6 +41,7 @@ public class Enemy : Npc
         mCollider.enabled=true;
         isDie = false;
         isSelect = false;
+        shouldDropLoot = true;
         StateSwitch(EnemyState.Patrol);
         uIHealthBar = PoolManager.instance.GetEnemyHp();
         uIHealthBar.Init(transform);
@@ -48,14 +49,21 @@ public class Enemy : Npc
     // 受击处理
     public void SetHp(int damage = 1)
     {
+        SetHp(damage, true);
+    }
+
+    /// <summary>
+    /// 受击处理（可控制是否掉落战利品）
+    /// </summary>
+    public void SetHp(int damage, bool dropLoot)
+    {
         if (isDie) return;
 
         mHp -= damage;
-        // Debug.Log("扣血，当前血量："+mHp);
         uIHealthBar.SetHpFill(mHp/mHpMax);
         if (mHp <= 0)
         {
-            
+            shouldDropLoot = dropLoot;
             StateSwitch(EnemyState.Die);
         }
         else
@@ -63,6 +71,11 @@ public class Enemy : Npc
             StateSwitch(EnemyState.Hit);
         }
     }
+
+    /// <summary>
+    /// 是否应该掉落战利品（被战士击杀时不掉落）
+    /// </summary>
+    [HideInInspector] public bool shouldDropLoot = true;
 
     void OnTriggerEnter(Collider other)
     {
@@ -241,8 +254,10 @@ public class Enemy : Npc
         }
         else
         {
-            GetDropRawMaterial(2);
-           
+            if (shouldDropLoot)
+            {
+                GetDropRawMaterial(2);
+            }
         }
         yield return new WaitForSeconds(0.7f);//受击结束
         if (!isDie)

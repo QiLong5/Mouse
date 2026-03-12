@@ -19,6 +19,37 @@ public class Wheat : Item
     private bool isHarvested = false;
     public bool IsHarvested => isHarvested;
 
+    /// <summary>
+    /// 当前锁定该小麦的农夫（防止多个农夫同时前往同一小麦）
+    /// </summary>
+    private FarmerPatientItem reservedByFarmer = null;
+
+    /// <summary>
+    /// 该小麦是否可被农夫选为目标（未收割且未被其他农夫锁定）
+    /// </summary>
+    public bool IsAvailableForFarmer(FarmerPatientItem farmer)
+    {
+        if (isHarvested) return false;
+        if (reservedByFarmer != null && reservedByFarmer != farmer) return false;
+        return true;
+    }
+
+    /// <summary>
+    /// 农夫锁定该小麦为目标
+    /// </summary>
+    public void ReserveForFarmer(FarmerPatientItem farmer)
+    {
+        reservedByFarmer = farmer;
+    }
+
+    /// <summary>
+    /// 释放农夫锁定
+    /// </summary>
+    public void ReleaseReservation()
+    {
+        reservedByFarmer = null;
+    }
+
     protected override void Awake()
     {
         base.Awake();
@@ -61,6 +92,7 @@ public class Wheat : Item
 
     private void Harvest()
     {
+        ReleaseReservation(); // 玩家收割时释放农夫锁定
         SetState(true);
         SpawnWheatItem();
         StartCoroutine(RegrowCoroutine());
@@ -79,32 +111,36 @@ public class Wheat : Item
     private IEnumerator RegrowCoroutine()
     {
         yield return new WaitForSeconds(regrowTime);
+        reservedByFarmer = null;
         SetState(false);
     }
 
     /// <summary>
-    /// 农夫收割小麦
+    /// 农夫收割小麦 - 收割后小麦直接飞向泡汤池的wheatDeliveryStack
     /// </summary>
     public bool FarmerHarvest(FarmerPatientItem farmer)
     {
         if (isHarvested) return false;
         SetState(true);
-        SpawnWheatItemForFarmer(farmer);
+        ReleaseReservation();
+        SpawnWheatItemToDelivery();
         StartCoroutine(RegrowCoroutine());
         return true;
     }
 
-    private void SpawnWheatItemForFarmer(FarmerPatientItem farmer)
+    /// <summary>
+    /// 生成WheatItem并直接堆叠到泡汤池的wheatDeliveryStack
+    /// </summary>
+    private void SpawnWheatItemToDelivery()
     {
-        if (farmer.farmerItemStackManager == null) return;
-        var stack = farmer.farmerItemStackManager.GetStackByItemType(ItemType.WheatItem);
-        if (stack == null || stack.stackAmount >= stack.maxStackAmount) return;
+        var deliveryStack = SoakManager.instance.wheatDeliveryStack;
+        if (deliveryStack == null) return;
 
         Item wheatItem = PoolManager.instance.GetItem(ItemType.WheatItem);
         wheatItem.gameObject.SetActive(true);
         wheatItem.transform.position = transform.position;
         wheatItem.transform.parent = PoolManager.instance.transform;
         wheatItem.cd.enabled = false;
-        wheatItem.PickUpToPlayer(stack, false);
+        deliveryStack.StackItem(wheatItem);
     }
 }

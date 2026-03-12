@@ -12,35 +12,48 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0b570d2551c2d9247881b64ee1f9cf54, type: 3}
   m_Name: GameConfig
   m_EditorClassIdentifier: 
-  _excelFilePath: "Assets/Plugins/ExcelTool/\u8001\u9F20\u9489\u677F.xlsx"
+  _excelFilePath: "Assets/Plugins/ExcelTool/\u706D\u9F20\u55B7\u96FE.xlsx"
   _sheetIndices: 1,2,3,4,5
   "\u73A9\u5BB6\u6570\u636E":
     playerSpeed: 6
-    playerTurnSmoothTime: 0
+    playerTurnSmoothTime: 0.1
     playerMaxHp: 100
   "\u8001\u9F20\u6570\u636E":
     enemyCount: 30
     enemySpeed: 4
     enemyKnockbackForc: 20
-    enemyDropNum: 1
-    enemyInterval: 0.5
-    enemyCreateNum: 1
+    enemyDropNum: 5
+    enemyInitNum: 5
   "\u5176\u4ED6\u914D\u7F6E":
-    hammerTime: 5
+    wheatTime: 3
     conveyorTime: 0.8
-  itemInfo:
-  - produceType: Meat
-    needCount: 2
-    produceNum: 1
-    proTime: 2
-  - produceType: RoastMeat
-    needCount: 1
-    produceNum: 1
-    proTime: 3
-  - produceType: Money
-    needCount: 1
-    produceNum: 1
-    proTime: 1
+    patientNum: 6
+    famerPatientNum: 3
+    elevatorTime: 0.5
+    wheatPerPatient: 1
+    patienMoney: 10
+    famerPatienMoney: 50
+  clerkInfo:
+  - id: 1
+    getTotalCoin: 50
+    unlockIds: 
+    price: 50
+    eventStr: 
+  - id: 2
+    getTotalCoin: 0
+    unlockIds: 01000000
+    price: 100
+    eventStr: 
+  - id: 3
+    getTotalCoin: 0
+    unlockIds: 02000000
+    price: 200
+    eventStr: 
+  - id: 4
+    getTotalCoin: 0
+    unlockIds: 03000000
+    price: 300
+    eventStr: 
   guildInfo:
   - id: 1
     priority: 1
@@ -54,103 +67,71 @@ MonoBehaviour:
     priority: 1
     triggerType: 3
     triggerNum: 10
-    triggerName: BigMeat
+    triggerName: 
     hideType: 2
     hideNum: 1
-    hideName: BigMeat
+    hideName: 
   - id: 3
     priority: 1
     triggerType: 1
     triggerNum: 10
-    triggerName: BigMeat
+    triggerName: 
     hideType: 3
     hideNum: 1
-    hideName: Meat
+    hideName: 
   - id: 4
     priority: 1
     triggerType: 3
     triggerNum: 10
-    triggerName: Meat
+    triggerName: 
     hideType: 2
     hideNum: 1
-    hideName: Meat
+    hideName: 
   - id: 5
     priority: 1
     triggerType: 1
     triggerNum: 10
-    triggerName: Meat
+    triggerName: 
     hideType: 3
     hideNum: 1
-    hideName: RoastMeat
+    hideName: 
   - id: 6
     priority: 1
     triggerType: 3
     triggerNum: 10
-    triggerName: RoastMeat
+    triggerName: 
     hideType: 2
     hideNum: 1
-    hideName: RoastMeat
+    hideName: 
   - id: 7
     priority: 1
     triggerType: 1
     triggerNum: 10
-    triggerName: RoastMeat
+    triggerName: 
     hideType: 3
     hideNum: 1
-    hideName: Money
+    hideName: 
   - id: 8
     priority: 1
     triggerType: 3
     triggerNum: 10
-    triggerName: Money
+    triggerName: 
     hideType: 2
     hideNum: 1
-    hideName: Money
+    hideName: 
   - id: 9
     priority: 1
     triggerType: 4
     triggerNum: 1
-    triggerName: "Clerk_\u6728\u6869"
+    triggerName: 
     hideType: 5
     hideNum: 1
-    hideName: "Clerk_\u6728\u6869"
+    hideName: 
   - id: 10
     priority: 1
     triggerType: 4
     triggerNum: 1
-    triggerName: "Clerk_\u9524\u5B50"
+    triggerName: 
     hideType: 5
     hideNum: 1
-    hideName: "Clerk_\u9524\u5B50"
-  - id: 11
-    priority: 1
-    triggerType: 4
-    triggerNum: 1
-    triggerName: "Clerk_\u9ED8\u8BA41"
-    hideType: 5
-    hideNum: 1
-    hideName: "Clerk_\u9ED8\u8BA41"
-  - id: 12
-    priority: 1
-    triggerType: 4
-    triggerNum: 1
-    triggerName: "Clerk_\u9ED8\u8BA42"
-    hideType: 5
-    hideNum: 1
-    hideName: "Clerk_\u9ED8\u8BA42"
-  - id: 13
-    priority: 1
-    triggerType: 4
-    triggerNum: 1
-    triggerName: "Clerk_\u9ED8\u8BA43"
-    hideType: 5
-    hideNum: 1
-    hideName: "Clerk_\u9ED8\u8BA43"
-  - id: 14
-    priority: 1
-    triggerType: 4
-    triggerNum: 1
-    triggerName: "Clerk_\u9ED8\u8BA44"
-    hideType: 5
-    hideNum: 1
-    hideName: "Clerk_\u9ED8\u8BA44"
+    hideName: 

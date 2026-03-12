@@ -26,8 +26,6 @@ public class Elevator : MonoBehaviour
     [SerializeField] private List<Transform> farmerStandingPositions = new List<Transform>();
     [Tooltip("上方排队路径（子物体为排队站位点，第0个最靠近电梯）")]
     [SerializeField] private Transform topQueuePath;
-    [Tooltip("下方排队路径（子物体为排队站位点，第0个最靠近电梯）")]
-    [SerializeField] private Transform bottomQueuePath;
     [Tooltip("农夫进入电梯站位的移动速度")]
     [SerializeField] private float farmerBoardSpeed = 0.3f;
 
@@ -36,7 +34,6 @@ public class Elevator : MonoBehaviour
     private bool isRunning = false;
 
     private List<FarmerPatientItem> waitingFarmersTop = new List<FarmerPatientItem>();
-    private List<FarmerPatientItem> waitingFarmersBottom = new List<FarmerPatientItem>();
     private List<FarmerPatientItem> farmersOnElevator = new List<FarmerPatientItem>();
 
     public bool IsAtTop => isAtTop;
@@ -64,26 +61,25 @@ public class Elevator : MonoBehaviour
     }
 
     /// <summary>
-    /// 农夫注册等待电梯，分配排队位置并移动过去
+    /// 农夫注册等待电梯（只在上方排队）
     /// </summary>
     public void RegisterWaitingFarmer(FarmerPatientItem farmer, bool atTop)
     {
-        var waitingList = atTop ? waitingFarmersTop : waitingFarmersBottom;
-        if (waitingList.Contains(farmer)) return;
+        if (!atTop) return; // 农夫不再从下方搭电梯
+        if (waitingFarmersTop.Contains(farmer)) return;
 
-        waitingList.Add(farmer);
-        MoveFarmerToQueuePosition(farmer, waitingList.Count - 1, atTop);
+        waitingFarmersTop.Add(farmer);
+        MoveFarmerToQueuePosition(farmer, waitingFarmersTop.Count - 1);
     }
 
     /// <summary>
-    /// 移动农夫到排队路径的指定位置
+    /// 移动农夫到上方排队路径的指定位置
     /// </summary>
-    private void MoveFarmerToQueuePosition(FarmerPatientItem farmer, int queueIndex, bool atTop)
+    private void MoveFarmerToQueuePosition(FarmerPatientItem farmer, int queueIndex)
     {
-        Transform queuePath = atTop ? topQueuePath : bottomQueuePath;
-        if (queuePath == null || queueIndex >= queuePath.childCount) return;
+        if (topQueuePath == null || queueIndex >= topQueuePath.childCount) return;
 
-        Vector3 targetPos = queuePath.GetChild(queueIndex).position;
+        Vector3 targetPos = topQueuePath.GetChild(queueIndex).position;
         targetPos = new Vector3(targetPos.x, farmer.transform.position.y, targetPos.z);
         farmer.MoveToTarget(targetPos, () => { farmer.StopMovement(); });
     }
@@ -91,12 +87,11 @@ public class Elevator : MonoBehaviour
     /// <summary>
     /// 剩余排队农夫向前移动填补空位
     /// </summary>
-    private void ShiftQueueForward(bool atTop)
+    private void ShiftQueueForward()
     {
-        var waitingList = atTop ? waitingFarmersTop : waitingFarmersBottom;
-        for (int i = 0; i < waitingList.Count; i++)
+        for (int i = 0; i < waitingFarmersTop.Count; i++)
         {
-            MoveFarmerToQueuePosition(waitingList[i], i, atTop);
+            MoveFarmerToQueuePosition(waitingFarmersTop[i], i);
         }
     }
 
@@ -119,38 +114,42 @@ public class Elevator : MonoBehaviour
     }
 
     /// <summary>
-    /// 农夫依次从第一个排队点进入电梯站位，全部上完后电梯开始移动
+    /// 电梯下行时农夫依次从排队点进入电梯站位，全部上完后电梯开始移动
+    /// 上行时不搭载农夫
     /// </summary>
     private IEnumerator BoardFarmersAndMove(Player player, bool goingDown)
     {
-        var waitingList = goingDown ? waitingFarmersTop : waitingFarmersBottom;
-        int count = Mathf.Min(waitingList.Count, farmerStandingPositions.Count);
-
-        for (int i = 0; i < count; i++)
+        // 只有下行时才搭载农夫
+        if (goingDown)
         {
-            // 取出队首农夫
-            var farmer = waitingList[0];
-            waitingList.RemoveAt(0);
+            int count = Mathf.Min(waitingFarmersTop.Count, farmerStandingPositions.Count);
 
-            // 剩余农夫向前移动到前一个排队位置
-            ShiftQueueForward(goingDown);
+            for (int i = 0; i < count; i++)
+            {
+                // 取出队首农夫
+                var farmer = waitingFarmersTop[0];
+                waitingFarmersTop.RemoveAt(0);
 
-            // 农夫进入电梯：先走到第一个排队点（如果不在的话），再走到电梯站位
-            farmer.StopMovement();
-            farmer.mRigidbody.isKinematic = true;
-            farmer.farmerState = FarmerState.RidingElevator;
+                // 剩余农夫向前移动到前一个排队位置
+                ShiftQueueForward();
 
-            // 移动到电梯站位
-            Vector3 standPos = farmerStandingPositions[i].position;
-            farmer.transform.SetParent(elevatorPlatform);
-            farmersOnElevator.Add(farmer);
+                // 农夫进入电梯
+                farmer.StopMovement();
+                farmer.mRigidbody.isKinematic = true;
+                farmer.farmerState = FarmerState.RidingElevator;
 
-            // 使用DOTween平滑移动到站位
-            bool arrived = false;
-            farmer.transform.DOMove(standPos, farmerBoardSpeed)
-                .SetEase(Ease.OutQuad)
-                .OnComplete(() => { arrived = true; });
-            while (!arrived) yield return null;
+                // 移动到电梯站位
+                Vector3 standPos = farmerStandingPositions[i].position;
+                farmer.transform.SetParent(elevatorPlatform);
+                farmersOnElevator.Add(farmer);
+
+                // 使用DOTween平滑移动到站位
+                bool arrived = false;
+                farmer.transform.DOMove(standPos, farmerBoardSpeed)
+                    .SetEase(Ease.OutQuad)
+                    .OnComplete(() => { arrived = true; });
+                while (!arrived) yield return null;
+            }
         }
 
         // 所有农夫上完，启动电梯移动
