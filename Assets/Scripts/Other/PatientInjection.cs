@@ -124,65 +124,29 @@ public class PatientInjection : MonoBehaviour
             });
     }
 
+
+    int dropMoney = 10;//金币总价值
     /// <summary>
     /// 掉落金币到MoneyManager位置
     /// </summary>
     private void DropMoneyToManager(PatientItem patien, System.Action onComplete)
     {
-        //生成金币
-        var money = PoolManager.instance.GetItem(ItemType.Money);
-        //设置金币初始位置（从病人位置抛出）
-        money.transform.position = patien.transform.position + Vector3.up * 0.5f;
-        money.cd.enabled = false;
-        money.canDoFurtherMove = true;
-        money.gameObject.SetActive(true);
-
-        //使用贝塞尔曲线移动到MoneyManager位置，参考Enemy的ParabolicDrop
-        StartCoroutine(MoneyDropIE(money, bedProcess.moneyPos.position, onComplete));
-    }
-
-    /// <summary>
-    /// 金币抛物线掉落协程
-    /// </summary>
-    private IEnumerator MoneyDropIE(Item money, Vector3 targetPos, System.Action onComplete)
-    {
-        Vector3 startPos = money.transform.position;
-
-        //抛物线参数
-        float dropDuration = 0.5f;
-        float throwHeight = 2f;
-
-        //计算目标位置（MoneyManager的位置）
-        Vector3 endPos = targetPos;
-
-        float elapsed = 0f;
-
-        //抛物线运动
-        while (elapsed < dropDuration)
+        int num = 0;
+        var manager = bedProcess.moneyPos.GetComponent<GroundItemStackManager>();
+        for (int i = 0; i < 99; i++)
         {
-            elapsed += Time.deltaTime;
-            float t = elapsed / dropDuration;
-
-            //水平位置插值
-            Vector3 currentPos = Vector3.Lerp(startPos, endPos, t);
-
-            //抛物线高度计算（使用二次函数）
-            float height = throwHeight * 4f * t * (1f - t);
-            currentPos.y = startPos.y + height;
-
-            money.transform.position = currentPos;
-
-            yield return null;
+            var money = PoolManager.instance.GetItem(ItemType.Money);//生成金币
+            num += money.value;
+            //设置金币初始位置（从病人位置抛出）
+            money.transform.position = patien.transform.position + Vector3.up * 0.5f;
+            money.cd.enabled = false;
+            money.canDoFurtherMove = true;
+            money.gameObject.SetActive(true);
+            manager.StackItem(money);
+            if (num >= dropMoney)
+                break;
         }
-
-        //确保最终位置准确
-        money.transform.position = endPos;
-
-        money.cd.enabled = true;
-        //金币被MoneyManager收集
-        var groundStack = money.GetComponent<GroundItemStackManager>();
-        if (groundStack != null)
-            groundStack.StackItem(money);
         onComplete?.Invoke();
+        return;
     }
 }

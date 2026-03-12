@@ -195,6 +195,15 @@ public class PorterNpc : Npc
                 while (!isfinsh)
                     yield return null;
             }
+            //前往排队点
+            isWorking = true;
+            isfinsh = false;
+            MoveToTarget(loaderNpcPath.GetChild(1), () =>
+            {
+                isfinsh = true;
+            });
+            while (!isfinsh)
+                yield return null;
 
             //前往泡汤池
             var soakPos = soakManager.poolStack.transform.position;

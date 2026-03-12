@@ -50,12 +50,14 @@ public class ItemStack : MonoBehaviour
     protected List<Vector3> originalLocalPositions = new List<Vector3>();
     public  bool iscomplet_bend=false;//是否处于弯曲
     public bool iscomplet_origina = true;//是否处于笔直
+    private bool isPlayer;
     protected virtual void Start()
     {
         stackManager = GetComponentInParent<ItemStackManager>();
         stackedItemList = new List<Item>();
 
         nextStackPosition = Vector3.zero;
+        isPlayer = transform.parent.parent.GetComponent<Player>() != null;
     }
 
     protected virtual void Update()
@@ -143,7 +145,7 @@ public class ItemStack : MonoBehaviour
             return;
            // _item.StopAllCoroutines();
         }
-        if (stackAmount >= maxStackAmount)
+        if (stackAmount >= maxStackAmount&&isPlayer)
         {
             Player.instance.maxImg.gameObject.SetActive(true);
             return;
@@ -185,7 +187,7 @@ public class ItemStack : MonoBehaviour
                 
         }
         stackAmount++;
-        if (stackAmount >= maxStackAmount)
+        if (stackAmount >= maxStackAmount&&isPlayer)
         {
             Player.instance.maxImg.gameObject.SetActive(true);
         }

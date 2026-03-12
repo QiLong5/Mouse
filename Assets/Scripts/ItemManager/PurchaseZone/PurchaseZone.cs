@@ -8,6 +8,7 @@ using UnityEngine.Events;
 public class PurchaseZone : MonoBehaviour
 {
     [Header("Purchase info / 购买信息")]
+    public int id;
     public int price; //总共需要的价格
     public int remainingPrice { get; protected set; } //剩余还需要付的钱
     public ItemType requiredItemType;  //需要的物品类型
@@ -69,9 +70,13 @@ public class PurchaseZone : MonoBehaviour
         {
             Purchase();
         }
-
     }
 
+    public void InitPrice(int price)
+    {
+        this.price=price;
+        remainingPrice = price;
+    }
 
 
     protected virtual void OnTriggerEnter(Collider other)

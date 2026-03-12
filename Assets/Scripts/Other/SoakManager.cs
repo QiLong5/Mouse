@@ -188,50 +188,27 @@ public class SoakManager : MonoSingleton<SoakManager>
         }
     }
 
+    int dropMoney = 50;//金币总价值
     /// <summary>
     /// 掉落金币到MoneyManager位置
     /// </summary>
     private void DropMoneyToManager(PatientItem patient, System.Action onComplete)
     {
-        var money = PoolManager.instance.GetItem(ItemType.Money);
-        money.transform.position = patient.transform.position + Vector3.up * 0.5f;
-        money.cd.enabled = false;
-        money.canDoFurtherMove = true;
-        money.gameObject.SetActive(true);
-
-        Vector3 targetPos = moneyDropPoint != null ? moneyDropPoint.position : patient.transform.position;
-        StartCoroutine(MoneyDropIE(money, targetPos, onComplete));
-    }
-
-    /// <summary>
-    /// 金币抛物线掉落协程
-    /// </summary>
-    private IEnumerator MoneyDropIE(Item money, Vector3 targetPos, System.Action onComplete)
-    {
-        Vector3 startPos = money.transform.position;
-        float dropDuration = 0.5f;
-        float throwHeight = 2f;
-        Vector3 endPos = targetPos;
-        float elapsed = 0f;
-
-        while (elapsed < dropDuration)
+        int num = 0;
+        var groundStack = moneyDropPoint.GetComponent<GroundItemStackManager>();
+        for (int i = 0; i < 99; i++)
         {
-            elapsed += Time.deltaTime;
-            float t = elapsed / dropDuration;
-            Vector3 currentPos = Vector3.Lerp(startPos, endPos, t);
-            float height = throwHeight * 4f * t * (1f - t);
-            currentPos.y = startPos.y + height;
-            money.transform.position = currentPos;
-            yield return null;
-        }
-
-        money.transform.position = endPos;
-        money.cd.enabled = true;
-
-        var groundStack = money.GetComponent<GroundItemStackManager>();
-        if (groundStack != null)
+            var money = PoolManager.instance.GetItem(ItemType.Money);
+            money.transform.position = patient.transform.position + Vector3.up * 0.5f;
+            money.cd.enabled = false;
+            money.canDoFurtherMove = true;
+            money.gameObject.SetActive(true);
             groundStack.StackItem(money);
-
+            if (num >= dropMoney)
+                break;
+        }
+        
+        
         onComplete?.Invoke();
     }
 }

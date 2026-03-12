@@ -1,0 +1,156 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b570d2551c2d9247881b64ee1f9cf54, type: 3}
+  m_Name: GameConfig
+  m_EditorClassIdentifier: 
+  _excelFilePath: "Assets/Plugins/ExcelTool/\u8001\u9F20\u9489\u677F.xlsx"
+  _sheetIndices: 1,2,3,4,5
+  "\u73A9\u5BB6\u6570\u636E":
+    playerSpeed: 6
+    playerTurnSmoothTime: 0
+    playerMaxHp: 100
+  "\u8001\u9F20\u6570\u636E":
+    enemyCount: 30
+    enemySpeed: 4
+    enemyKnockbackForc: 20
+    enemyDropNum: 1
+    enemyInterval: 0.5
+    enemyCreateNum: 1
+  "\u5176\u4ED6\u914D\u7F6E":
+    hammerTime: 5
+    conveyorTime: 0.8
+  itemInfo:
+  - produceType: Meat
+    needCount: 2
+    produceNum: 1
+    proTime: 2
+  - produceType: RoastMeat
+    needCount: 1
+    produceNum: 1
+    proTime: 3
+  - produceType: Money
+    needCount: 1
+    produceNum: 1
+    proTime: 1
+  guildInfo:
+  - id: 1
+    priority: 1
+    triggerType: 1
+    triggerNum: 0
+    triggerName: 
+    hideType: 0
+    hideNum: 0
+    hideName: 
+  - id: 2
+    priority: 1
+    triggerType: 3
+    triggerNum: 10
+    triggerName: BigMeat
+    hideType: 2
+    hideNum: 1
+    hideName: BigMeat
+  - id: 3
+    priority: 1
+    triggerType: 1
+    triggerNum: 10
+    triggerName: BigMeat
+    hideType: 3
+    hideNum: 1
+    hideName: Meat
+  - id: 4
+    priority: 1
+    triggerType: 3
+    triggerNum: 10
+    triggerName: Meat
+    hideType: 2
+    hideNum: 1
+    hideName: Meat
+  - id: 5
+    priority: 1
+    triggerType: 1
+    triggerNum: 10
+    triggerName: Meat
+    hideType: 3
+    hideNum: 1
+    hideName: RoastMeat
+  - id: 6
+    priority: 1
+    triggerType: 3
+    triggerNum: 10
+    triggerName: RoastMeat
+    hideType: 2
+    hideNum: 1
+    hideName: RoastMeat
+  - id: 7
+    priority: 1
+    triggerType: 1
+    triggerNum: 10
+    triggerName: RoastMeat
+    hideType: 3
+    hideNum: 1
+    hideName: Money
+  - id: 8
+    priority: 1
+    triggerType: 3
+    triggerNum: 10
+    triggerName: Money
+    hideType: 2
+    hideNum: 1
+    hideName: Money
+  - id: 9
+    priority: 1
+    triggerType: 4
+    triggerNum: 1
+    triggerName: "Clerk_\u6728\u6869"
+    hideType: 5
+    hideNum: 1
+    hideName: "Clerk_\u6728\u6869"
+  - id: 10
+    priority: 1
+    triggerType: 4
+    triggerNum: 1
+    triggerName: "Clerk_\u9524\u5B50"
+    hideType: 5
+    hideNum: 1
+    hideName: "Clerk_\u9524\u5B50"
+  - id: 11
+    priority: 1
+    triggerType: 4
+    triggerNum: 1
+    triggerName: "Clerk_\u9ED8\u8BA41"
+    hideType: 5
+    hideNum: 1
+    hideName: "Clerk_\u9ED8\u8BA41"
+  - id: 12
+    priority: 1
+    triggerType: 4
+    triggerNum: 1
+    triggerName: "Clerk_\u9ED8\u8BA42"
+    hideType: 5
+    hideNum: 1
+    hideName: "Clerk_\u9ED8\u8BA42"
+  - id: 13
+    priority: 1
+    triggerType: 4
+    triggerNum: 1
+    triggerName: "Clerk_\u9ED8\u8BA43"
+    hideType: 5
+    hideNum: 1
+    hideName: "Clerk_\u9ED8\u8BA43"
+  - id: 14
+    priority: 1
+    triggerType: 4
+    triggerNum: 1
+    triggerName: "Clerk_\u9ED8\u8BA44"
+    hideType: 5
+    hideNum: 1
+    hideName: "Clerk_\u9ED8\u8BA44"
